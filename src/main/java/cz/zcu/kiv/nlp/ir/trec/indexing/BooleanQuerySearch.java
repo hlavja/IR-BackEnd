@@ -43,21 +43,21 @@ public class BooleanQuerySearch {
      * @return list of documents for query
      */
     private List<String> processQuery(BooleanNode node, boolean notOperator) {
-        if (node.isTermBoolean()) {
-            if (notOperator) {
+        if (node.isTermBoolean()) { // is term
+            if (notOperator) { // negation
                 HashMap<String, Integer> allDocuments = new HashMap<>();
-                invertedList.getInvertedList().forEach((key, value) -> {
+                invertedList.getInvertedList().forEach((key, value) -> { // get all documents unique
                     allDocuments.putAll(value);
                 });
                 HashMap<String, Integer> documentsWithTerm = getDocumentsWithTerm(node.getTerm());
-                documentsWithTerm.forEach((key, value) -> allDocuments.remove(key));
+                documentsWithTerm.forEach((key, value) -> allDocuments.remove(key)); // remove documents with term
                 List<String> documents = new ArrayList<>();
                 allDocuments.forEach((key, value) -> documents.add(key));
                 return documents;
             } else {
                 HashMap<String, Integer> documentsWithTerm = getDocumentsWithTerm(node.getTerm());
                 List<String> documents = new ArrayList<>();
-                documentsWithTerm.forEach((key, value) -> documents.add(key));
+                documentsWithTerm.forEach((key, value) -> documents.add(key)); // documents with therm
                 return documents;
             }
         } else {
@@ -67,8 +67,8 @@ public class BooleanQuerySearch {
                 treeQuery = node.getLeaf().get(occur);
 
                 switch (occur) {
-                    case MUST:
-                        if (notOperator) {
+                    case MUST: // AND
+                        if (notOperator) { // !(A AND B) = !A OR !B
                             for(BooleanNode booleanNode: treeQuery) {
                                 documents = or(documents, processQuery(booleanNode, true));
                             }
@@ -78,8 +78,8 @@ public class BooleanQuerySearch {
                             }
                         }
                         break;
-                    case SHOULD:
-                        if (notOperator) {
+                    case SHOULD: // OR
+                        if (notOperator) { // !(A OR B) = !A AND !B
                             for(BooleanNode booleanNode: treeQuery) {
                                 documents = and(documents, processQuery(booleanNode, true));
                             }
@@ -89,7 +89,7 @@ public class BooleanQuerySearch {
                             }
                         }
                         break;
-                    case MUST_NOT:
+                    case MUST_NOT: // !A
                         for(BooleanNode booleanNode: treeQuery) {
                             documents = not(documents, processQuery(booleanNode, true));
                         }
@@ -114,7 +114,7 @@ public class BooleanQuerySearch {
         }
         List<String> finalWorkingList = new ArrayList<>();
         documents.forEach(documentId -> {
-            if (processQuery.contains(documentId)) { //if document is also in second list add it to result
+            if (processQuery.contains(documentId)) { // if document is also in second list add it to result
                 finalWorkingList.add(documentId);
             }
         });
@@ -133,7 +133,7 @@ public class BooleanQuerySearch {
             return workingList;
         }
         processQuery.forEach(documentId -> {
-            if (!documents.contains(documentId)) {
+            if (!documents.contains(documentId)) { // if document not in list add it
                 documents.add(documentId);
             }
         });
@@ -167,11 +167,11 @@ public class BooleanQuerySearch {
      * @return if at least one not empty return list, otherwise null
      */
     private List<String> checkEmptyLists(List<String> firstList, List<String> secondList) {
-        if (firstList.isEmpty() && secondList.isEmpty()) {
+        if (firstList.isEmpty() && secondList.isEmpty()) { // both empty
             return new ArrayList<>();
-        } else if (firstList.isEmpty()) {
+        } else if (firstList.isEmpty()) { // first empty return second
             return secondList;
-        } else if (secondList.isEmpty()) {
+        } else if (secondList.isEmpty()) { // second empty return first
             return firstList;
         } else {
             return null;
@@ -185,7 +185,7 @@ public class BooleanQuerySearch {
      */
     private HashMap<String, Integer> getDocumentsWithTerm(String term) {
         if (invertedList.getInvertedList().containsKey(term)) {
-            return invertedList.getInvertedList().get(term);
+            return invertedList.getInvertedList().get(term); // get all documents for term
         } else {
             return new HashMap<>();
         }
