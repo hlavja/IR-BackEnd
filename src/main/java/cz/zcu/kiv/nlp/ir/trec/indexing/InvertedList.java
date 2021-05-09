@@ -60,7 +60,7 @@ public class InvertedList {
     public void addDocumentsToInvertedList(List<Document> documents) {
         documents.forEach(document -> {
             addDocumentToInvertedList(document, true);
-            log.info("Indexed " + document.getTitle() + " !");
+            log.info("Indexed document " + countOfDocuments + " !");
         });
     }
 
