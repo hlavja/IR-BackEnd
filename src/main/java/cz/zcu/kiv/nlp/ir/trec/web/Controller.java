@@ -127,6 +127,17 @@ public class Controller {
     }
 
     /**
+     * Clearing index and repository
+     * @return http status determining successful/unsuccessful
+     */
+    @GetMapping("/clearIndex")
+    public ResponseEntity<String> clearIndex() {
+        index = new Index();
+        articleRepository = new ArticleRepository();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
      * Restore index from file
      * @param fileName filename to load index from
      * @return http status determining successful/unsuccessful
@@ -142,5 +153,57 @@ public class Controller {
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Get article by ID
+     * @param id article id
+     * @return article in response object
+     */
+    @GetMapping("/article/{id}")
+    public QueryResultModel getArticleById(@PathVariable int id) {
+        QueryResultModel response = new QueryResultModel();
+        List<ArticleModel> articles = new ArrayList<>();
+        articles.add(articleRepository.getArticleById(id));
+        response.setArticles(articles);
+        return response;
+    }
+
+    /**
+     * Get all articles
+     * @return articles in response object
+     */
+    @GetMapping("/articles")
+    public QueryResultModel getArticles() {
+        QueryResultModel response = new QueryResultModel();
+        List<ArticleModel> articles = articleRepository.getAllArticles();
+        response.setArticles(articles);
+        return response;
+    }
+
+    /**
+     * Delete article by id
+     * @param id artidle id to delete
+     * @return http status determining successful/unsuccessful
+     */
+    @DeleteMapping("/article/{id}")
+    public ResponseEntity<String> deleteArticle(@PathVariable int id) {
+        articleRepository.removeById(id);
+        index = new Index();
+        index.index(articleRepository.getArticlesAsDocument());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    /**
+     * Update existing article in repository
+     * @param article article object to update
+     * @return
+     */
+    @PostMapping("/article")
+    public ArticleModel updateArticle(@RequestBody ArticleModel article) {
+        articleRepository.updateArticle(article);
+        index = new Index();
+        index.index(articleRepository.getArticlesAsDocument());
+        return articleRepository.getArticleById(article.getId());
     }
 }

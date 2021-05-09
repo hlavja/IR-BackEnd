@@ -71,4 +71,20 @@ public class ArticleRepository implements Serializable {
         });
         return articlesToDocuments;
     }
+
+    /**
+     * Remove article from repository
+     * @param id of removed article
+     */
+    public void removeById(int id) {
+        articles.remove(id);
+    }
+
+    /**
+     * Update article in repository
+     * @param article article to update
+     */
+    public void updateArticle(ArticleModel article) {
+        articles.put(article.getId(), article);
+    }
 }

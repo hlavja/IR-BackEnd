@@ -4,7 +4,7 @@ import cz.zcu.kiv.nlp.ir.trec.data.Document;
 import cz.zcu.kiv.nlp.ir.trec.data.DocumentNew;
 import cz.zcu.kiv.nlp.ir.trec.data.Result;
 import cz.zcu.kiv.nlp.ir.trec.data.ResultImpl;
-import cz.zcu.kiv.nlp.ir.trec.preprocessing.Preprocessing;
+import lombok.Data;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.queryparser.flexible.precedence.PrecedenceQueryParser;
 import org.apache.lucene.search.BooleanQuery;
@@ -23,6 +23,7 @@ import java.util.*;
  * přidejte metody do rozhraní {@link Indexer} a {@link Searcher}.
  *
  */
+@Data
 public class Index implements Indexer, Searcher {
 
     /**
