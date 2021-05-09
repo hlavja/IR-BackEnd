@@ -197,7 +197,7 @@ public class Controller {
     /**
      * Update existing article in repository
      * @param article article object to update
-     * @return
+     * @return updated article
      */
     @PostMapping("/article")
     public ArticleModel updateArticle(@RequestBody ArticleModel article) {
