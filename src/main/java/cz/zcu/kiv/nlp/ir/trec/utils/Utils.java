@@ -2,6 +2,8 @@ package cz.zcu.kiv.nlp.ir.trec.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.zcu.kiv.nlp.ir.trec.dtos.ArticleModel;
+import cz.zcu.kiv.nlp.ir.trec.indexing.Index;
+import cz.zcu.kiv.nlp.ir.trec.indexing.InvertedList;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -32,15 +34,6 @@ public class Utils {
         }
     }
 
-    public static String readJsonFile(String fileName) {
-        try {
-            return Files.readString(Paths.get(fileName).toAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     /**
      * Read txt file with splitting by lines and return set with lines string.
      * @param filePath path to file
@@ -68,7 +61,6 @@ public class Utils {
         }
         try {
             List<String> result = new ArrayList<>();
-
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
             String line;
 
@@ -77,9 +69,7 @@ public class Utils {
                     result.add(line.trim());
                 }
             }
-
             inputStream.close();
-
             return result;
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -104,7 +94,6 @@ public class Utils {
                 sb.append(line).append("\n");
             }
             inputStream.close();
-
             return sb.toString().trim();
         } catch (IOException e) {
             throw new IllegalStateException(e);
@@ -118,19 +107,12 @@ public class Utils {
      * @param list lines of text to save
      */
     public static void saveFile(File file, Collection<String> list) {
-        PrintStream printStream = null;
-        try {
-            printStream = new PrintStream(new FileOutputStream(file), true, StandardCharsets.UTF_8);
-
+        try (PrintStream printStream = new PrintStream(new FileOutputStream(file), true, StandardCharsets.UTF_8)) {
             for (String text : list) {
                 printStream.println(text);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (printStream != null) {
-                printStream.close();
-            }
         }
     }
 
@@ -141,17 +123,56 @@ public class Utils {
      * @param text text to save
      */
     public static void saveFile(File file, String text) {
-        PrintStream printStream = null;
-        try {
-            printStream = new PrintStream(new FileOutputStream(file), true, StandardCharsets.UTF_8);
-
+        try (PrintStream printStream = new PrintStream(new FileOutputStream(file), true, StandardCharsets.UTF_8)) {
             printStream.println(text);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (printStream != null) {
-                printStream.close();
+        }
+    }
+
+    /**
+     * Save in memory index to file
+     * @param index index to save
+     * @param path filename of file to save index
+     * @return if succeeded true, than false
+     */
+    public static boolean saveIndex(Index index, String path) {
+        File file = new File(path);
+        try {
+            if (file.createNewFile()) {
+                final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+                objectOutputStream.writeObject(index);
+                objectOutputStream.close();
+                return true;
+            } else {
+                return false;
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Method for loading index from file
+     * @param path filename of stored index
+     * @return loaded index or null if not loaded
+     */
+    public static InvertedList loadIndex(String path) {
+        Object invertedList;
+        try {
+            File file = new File(path);
+            if (file.isFile()) {
+                final ObjectInputStream objectInputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+                invertedList = objectInputStream.readObject();
+                objectInputStream.close();
+                return (InvertedList) invertedList;
+            } else {
+                return null;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

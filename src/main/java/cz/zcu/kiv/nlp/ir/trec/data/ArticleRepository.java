@@ -7,31 +7,63 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Repository of articles saved in actual index
+ * @author hlavj on 1.5.2021
+ */
 public class ArticleRepository implements Serializable {
 
+    private static final long serialVersionUID = -8927068736199058148L;
+    /**
+     * Representation of database table [id, value]
+     */
     private final HashMap<Integer, ArticleModel> articles = new HashMap<>();
-    private int id = 0;
+    /**
+     * Auto increment index of repository
+     */
+    private int id = 1;
 
+    /**
+     * Method for batch process of articles
+     * @param importArticlesFromFile list of articles to index
+     */
     public void addArticles(List<ArticleModel> importArticlesFromFile) {
         importArticlesFromFile.forEach(this::addArticle);
     }
 
+    /**
+     * Add one article to repository
+     * @param article article to add
+     */
     public void addArticle(ArticleModel article) {
         article.setId(id);
         articles.put(id, article);
         id++;
     }
 
+    /**
+     * Getting article object by id
+     * @param id articleId
+     * @return article of given id
+     */
     public ArticleModel getArticleById(Integer id) {
         return articles.getOrDefault(id, null);
     }
 
+    /**
+     * Returns all articles in repository
+     * @return list of all articles
+     */
     public List<ArticleModel> getAllArticles() {
         List<ArticleModel> articles = new ArrayList<>();
         this.articles.forEach((integer, articleModel) -> articles.add(articleModel));
         return articles;
     }
 
+    /**
+     * Convert article to Document object
+     * @return list of document objects
+     */
     public List<Document> getArticlesAsDocument() {
         List<Document> articlesToDocuments = new ArrayList<>();
         this.articles.forEach((integer, articleModel) -> {

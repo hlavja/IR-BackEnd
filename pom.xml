@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>cz.zcu.kiv.nlp.ir.trec</groupId>
-	<artifactId>InformationRetrieval</artifactId>
+	<artifactId>IR</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>InformationRetrieval</name>
 	<description>Semestral work of Information Retrieval</description>

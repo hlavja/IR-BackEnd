@@ -6,17 +6,26 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Article representation of JSON object
+ * @author hlavj on 1.5.2021
+ */
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class ArticleModel implements Serializable {
 
     public ArticleModel() {
-
     }
 
     public ArticleModel(String title, String author) {
         this.title = title;
         this.author = author;
+    }
+
+    public ArticleModel(String title, Date downloadDate, String content) {
+        this.title = title;
+        this.downloadDate = downloadDate;
+        this.content = content;
     }
 
     public ArticleModel(Integer id, String author, Date downloadDate, String title, String url, String content, String category, Date published, Integer rank, float score) {

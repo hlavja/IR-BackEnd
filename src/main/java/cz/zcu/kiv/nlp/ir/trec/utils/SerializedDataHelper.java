@@ -17,7 +17,7 @@ import java.util.List;
 public class SerializedDataHelper {
 
     static Logger log = LoggerFactory.getLogger(SerializedDataHelper.class);
-    public static final java.text.DateFormat SDF = new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
+    public static final java.text.DateFormat SDF = new SimpleDateFormat("yyyy-MM-dd_HH_mm_SS");
 
     static public List<Document> loadDocument(File serializedFile) {
         final Object object;

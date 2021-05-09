@@ -6,6 +6,10 @@ import cz.zcu.kiv.nlp.ir.trec.utils.Utils;
 import cz.zcu.kiv.nlp.ir.trec.data.Document;
 import cz.zcu.kiv.nlp.ir.trec.data.Result;
 import cz.zcu.kiv.nlp.ir.trec.data.Topic;
+import org.apache.log4j.Appender;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.WriterAppender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +29,7 @@ public class TestTrecEval {
     static final String OUTPUT_DIR = "./TREC";
 
     protected static void configureLogger() {
-/*        BasicConfigurator.resetConfiguration();
+        BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure();
 
         File results = new File(OUTPUT_DIR);
@@ -39,8 +43,6 @@ public class TestTrecEval {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Logger.getRootLogger().setLevel(Level.INFO);*/
     }
 
     /**
@@ -57,7 +59,7 @@ public class TestTrecEval {
      * Metodu není třeba měnit kromě řádků označených T O D O  - tj. vytvoření objektu třídy {@link Index} a
      */
     public static void main(String args[]) throws IOException {
-        //configureLogger();
+        configureLogger();
 
         Index index = new Index();
 
