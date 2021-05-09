@@ -4,8 +4,8 @@ package cz.zcu.kiv.nlp.ir.trec.data;
  * Created by Tigi on 6.1.2015.
  *
  *  Rozhraní představuje výsledek pro ohodnocené vyhledávání. Tzn. po zadání dotazu vyhledávač vrátí
- * "List<Result>", kde každý objekt {@link Result} reprezentuje jeden dokument a jeho relevanci k zadanému dotazu.
- *  => tj. id dokumentu, skóre podobnosti mezi tímto dokumentem a dotazem (např. kosinova podobnost) a rank tj.
+ * "List Result", kde každý objekt {@link Result} reprezentuje jeden dokument a jeho relevanci k zadanému dotazu.
+ *  tj. id dokumentu, skóre podobnosti mezi tímto dokumentem a dotazem (např. kosinova podobnost) a rank tj.
  *  pořadí mezi ostatními vrácenými dokumenty (dokument s rankem 1 bude dokument, který je nejrelevantnější k dodtazu)
  *
  *  Toto rozhranní neimplementujte, ale použijte třídu {@link ResultImpl}, kterou můžete libovolně upravovat, případně
@@ -40,6 +40,8 @@ public interface Result extends Comparable<Result> {
     /**
      * Metoda používaná pro generování výstupu pro vyhodnocovací skript.
      * Metodu nepřepisujte (v potomcích) ani neupravujte
+     * @param topic topic
+     * @return string
      */
     String toString(String topic);
 }

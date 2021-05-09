@@ -6,8 +6,8 @@ package cz.zcu.kiv.nlp.ir.trec.data;
  * Třída {@link AbstractResult} implementuje rozhraní {@link Result}
  *
  * Představuje výsledek pro ohodnocené vyhledávání. Tzn. po zadání dotazu vyhledávač vrátí
- * "List<Result>", kde každý objekt {@link Result} reprezentuje jeden dokument a jeho relevanci k zadanému dotazu.
- *  => tj. id dokumentu, skóre podobnosti mezi tímto dokumentem a dotazem (např. kosinova podobnost), a rank tj.
+ * "List Result ", kde každý objekt {@link Result} reprezentuje jeden dokument a jeho relevanci k zadanému dotazu.
+ *  tj. id dokumentu, skóre podobnosti mezi tímto dokumentem a dotazem (např. kosinova podobnost), a rank tj.
  *  pořadí mezi ostatními vrácenými dokumenty (dokument s rankem 1 bude dokument, který je nejrelevantnější k dodtazu)
  *
  * Od této třídy byste měli dědit pokud vám nestačí implementace třídy {@link ResultImpl}, např. pokud potřebujete

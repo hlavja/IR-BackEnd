@@ -1,0 +1,8 @@
+cz.zcu.kiv.nlp.ir.trec
+cz.zcu.kiv.nlp.ir.trec.config
+cz.zcu.kiv.nlp.ir.trec.data
+cz.zcu.kiv.nlp.ir.trec.dtos
+cz.zcu.kiv.nlp.ir.trec.indexing
+cz.zcu.kiv.nlp.ir.trec.preprocessing
+cz.zcu.kiv.nlp.ir.trec.utils
+cz.zcu.kiv.nlp.ir.trec.web

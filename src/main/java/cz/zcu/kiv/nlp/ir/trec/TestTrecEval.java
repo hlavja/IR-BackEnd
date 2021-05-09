@@ -57,6 +57,8 @@ public class TestTrecEval {
      * Linuxu např. pomocí vašeho účtu na serveru ares.fav.zcu.cz
      *
      * Metodu není třeba měnit kromě řádků označených T O D O  - tj. vytvoření objektu třídy {@link Index} a
+     * @param args arguments
+     * @throws IOException exception
      */
     public static void main(String args[]) throws IOException {
         configureLogger();

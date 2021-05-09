@@ -22,8 +22,8 @@ public class QueryModel implements Serializable {
 
     /**
      * Determines if use vector or boolean model
-     * false > boolean model
-     * true > vector model
+     * false = boolean model
+     * true = vector model
      */
     private boolean vectorModel;
 
