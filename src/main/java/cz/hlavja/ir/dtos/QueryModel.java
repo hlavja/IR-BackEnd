@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class Query {
+public class QueryModel {
     private String query;
     private boolean vectorModel;
     private Integer numberOfResults;
