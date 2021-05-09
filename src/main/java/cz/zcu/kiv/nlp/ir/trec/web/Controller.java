@@ -3,7 +3,6 @@ package cz.zcu.kiv.nlp.ir.trec.web;
 import cz.zcu.kiv.nlp.ir.trec.data.ArticleRepository;
 import cz.zcu.kiv.nlp.ir.trec.data.Document;
 import cz.zcu.kiv.nlp.ir.trec.data.Result;
-import cz.zcu.kiv.nlp.ir.trec.data.Topic;
 import cz.zcu.kiv.nlp.ir.trec.dtos.ArticleModel;
 import cz.zcu.kiv.nlp.ir.trec.dtos.QueryModel;
 import cz.zcu.kiv.nlp.ir.trec.dtos.QueryResultModel;
@@ -30,14 +29,13 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class Controller {
-    static final String OUTPUT_DIR = "./TREC";
     private final Logger log = LoggerFactory.getLogger(Controller.class);
     ArticleRepository articleRepository = new ArticleRepository();
     Index index = new Index();
 
     /**
-     *
-     * @return
+     * Init crawled data
+     * @return http status determining successful/unsuccessful
      */
     @GetMapping("/initData")
     public ResponseEntity<String> initData () {
@@ -48,17 +46,16 @@ public class Controller {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
     /**
-     *
-     * @return
+     * Init data from TREC file
+     * @return http status determining successful/unsuccessful
      */
     @GetMapping("/initTrec")
     public ResponseEntity<String> initTrecData () {
         index = new Index();
         articleRepository = new ArticleRepository();
 
-        File serializedData = new File(OUTPUT_DIR + "/czechData.bin");
+        File serializedData = new File(Constants.OUTPUT_DIR + "/czechData.bin");
         List<Document> documents = new ArrayList<>();
         try {
             if (serializedData.exists()) {
@@ -71,10 +68,13 @@ public class Controller {
         }
 
         List<ArticleModel> articles = new ArrayList<>();
-        documents.forEach(document -> {
-            ArticleModel newArticle = new ArticleModel(document.getTitle(), document.getDate(), document.getText());
-            articles.add(newArticle);
-        });
+
+        if (documents != null) {
+            documents.forEach(document -> {
+                ArticleModel newArticle = new ArticleModel(document.getTitle(), document.getDate(), document.getText());
+                articles.add(newArticle);
+            });
+        }
 
         index.index(documents);
         articleRepository.addArticles(articles);
@@ -83,9 +83,9 @@ public class Controller {
     }
 
     /**
-     *
-     * @param queryModel
-     * @return
+     * Searching controller
+     * @param queryModel query object
+     * @return result model (results, number of documents)
      */
     @PostMapping("/query")
     public QueryResultModel search(@RequestBody QueryModel queryModel) {
@@ -112,7 +112,11 @@ public class Controller {
         return new QueryResultModel(articles, results.size());
     }
 
-
+    /**
+     * Save index to file
+     * @param fileName filename to save index to
+     * @return http status determining successful/unsuccessful
+     */
     @GetMapping("/saveIndex")
     public ResponseEntity<String> saveIndex (@RequestParam String fileName) {
         if (Utils.saveIndex(index, fileName)){
@@ -122,6 +126,11 @@ public class Controller {
         }
     }
 
+    /**
+     * Restore index from file
+     * @param fileName filename to load index from
+     * @return http status determining successful/unsuccessful
+     */
     @GetMapping("/loadIndex")
     public ResponseEntity<String> loadIndex (@RequestParam String fileName) {
         InvertedList loadedInvertedList;

@@ -29,8 +29,7 @@ public class BasicPreprocessing implements Preprocessing {
 
     @Override
     public void index(String document) {
-
-        this.wordFrequencies.clear();
+        this.wordFrequencies.clear(); // clear word frequencies for every one processed document
 
         if (toLowercase) {
             document = document.toLowerCase();
