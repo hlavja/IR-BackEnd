@@ -1,5 +1,6 @@
 package cz.zcu.kiv.nlp.ir.trec.preprocessing;
 
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,14 +73,8 @@ public class BasicPreprocessing implements Preprocessing {
         return text;
     }
 
-    final String withDiacritics = "áÁčćČďĎéÉěĚíÍňŇóÓřŘšŠťŤúÚůŮýÝžŽ";
-    final String withoutDiacritics = "aAccCdDeEeEiInNoOrRsStTuUuUyYzZ";
-
     private String removeAccents(String text) {
-        for (int i = 0; i < withDiacritics.length(); i++) {
-            text = text.replaceAll("" + withDiacritics.charAt(i), "" + withoutDiacritics.charAt(i));
-        }
-        return text;
+        return StringUtils.stripAccents(text);
     }
 
     public Map<String, Integer> getWordFrequencies() {
