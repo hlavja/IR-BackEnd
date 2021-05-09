@@ -19,7 +19,7 @@ public class AdvancedTokenizer implements Tokenizer {
     public static String[] tokenize(String text, String regex) {
         Pattern pattern = Pattern.compile(regex);
 
-        ArrayList<String> words = new ArrayList<String>();
+        ArrayList<String> words = new ArrayList<>();
 
         Matcher matcher = pattern.matcher(text);
         while (matcher.find()) {

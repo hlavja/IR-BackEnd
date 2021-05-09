@@ -14,31 +14,15 @@ import java.util.Date;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class ArticleModel implements Serializable {
 
-    public ArticleModel() {
-    }
+    private static final long serialVersionUID = -6729626712081187172L;
 
-    public ArticleModel(String title, String author) {
-        this.title = title;
-        this.author = author;
+    public ArticleModel() {
     }
 
     public ArticleModel(String title, Date downloadDate, String content) {
         this.title = title;
         this.downloadDate = downloadDate;
         this.content = content;
-    }
-
-    public ArticleModel(Integer id, String author, Date downloadDate, String title, String url, String content, String category, Date published, Integer rank, float score) {
-        this.id = id;
-        this.author = author;
-        this.downloadDate = downloadDate;
-        this.title = title;
-        this.url = url;
-        this.content = content;
-        this.category = category;
-        this.published = published;
-        this.rank = rank;
-        this.score = score;
     }
 
     private Integer id = null;

@@ -3,13 +3,18 @@ package cz.zcu.kiv.nlp.ir.trec.dtos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * DTO for communication with frontend
  * @author hlavj on 1.5.2021
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class QueryModel {
+public class QueryModel implements Serializable {
+
+    private static final long serialVersionUID = 1710926421060349608L;
+
     /**
      * Search query
      */

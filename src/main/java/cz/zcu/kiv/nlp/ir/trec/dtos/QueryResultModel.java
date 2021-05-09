@@ -3,6 +3,7 @@ package cz.zcu.kiv.nlp.ir.trec.dtos;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,7 +12,9 @@ import java.util.List;
  */
 @Data
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-public class QueryResultModel {
+public class QueryResultModel implements Serializable {
+
+    private static final long serialVersionUID = 7376802919774150238L;
 
     public QueryResultModel() {
     }

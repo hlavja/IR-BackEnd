@@ -66,9 +66,7 @@ public class ArticleRepository implements Serializable {
      */
     public List<Document> getArticlesAsDocument() {
         List<Document> articlesToDocuments = new ArrayList<>();
-        this.articles.forEach((integer, articleModel) -> {
-            articlesToDocuments.add(new DocumentNew(articleModel.getContent(), Integer.toString(integer), articleModel.getTitle(), articleModel.getPublished()));
-        });
+        this.articles.forEach((integer, articleModel) -> articlesToDocuments.add(new DocumentNew(articleModel.getContent(), Integer.toString(integer), articleModel.getTitle(), articleModel.getPublished())));
         return articlesToDocuments;
     }
 

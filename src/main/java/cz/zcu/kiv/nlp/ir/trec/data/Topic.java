@@ -11,6 +11,7 @@ import java.io.Serializable;
  * Obsahuje tři textová pole narrative, description a title, která můžete použít ve vašem dotazu.
  */
 public class Topic implements Serializable {
+    private static final long serialVersionUID = -1796123305123360077L;
     String narrative;
     String description;
     String id;

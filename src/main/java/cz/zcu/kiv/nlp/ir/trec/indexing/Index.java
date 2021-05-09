@@ -119,9 +119,7 @@ public class Index implements Indexer, Searcher {
      */
     private List<Result> getResults(HashMap<String, Double> cosineSimilarity) {
         List<Result> results = new ArrayList<>();
-        cosineSimilarity.forEach((key, value) -> {
-            results.add(new ResultImpl(key, value.floatValue()));
-        });
+        cosineSimilarity.forEach((key, value) -> results.add(new ResultImpl(key, value.floatValue())));
         Collections.sort(results);
         int rank = 1;
         for (Result result: results) {
