@@ -1,17 +1,10 @@
 package cz.zcu.kiv.nlp.ir.trec;
 
+import cz.zcu.kiv.nlp.ir.trec.data.*;
 import cz.zcu.kiv.nlp.ir.trec.indexing.Index;
 import cz.zcu.kiv.nlp.ir.trec.utils.SerializedDataHelper;
 import cz.zcu.kiv.nlp.ir.trec.utils.Utils;
-import cz.zcu.kiv.nlp.ir.trec.data.Document;
-import cz.zcu.kiv.nlp.ir.trec.data.Result;
-import cz.zcu.kiv.nlp.ir.trec.data.Topic;
-import org.apache.log4j.Appender;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.WriterAppender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.*;
 
 import java.io.*;
 import java.util.*;
@@ -25,7 +18,7 @@ import java.util.*;
  */
 public class TestTrecEval {
 
-    static Logger log = LoggerFactory.getLogger(TestTrecEval.class);
+    static Logger log = Logger.getLogger(TestTrecEval.class);
     static final String OUTPUT_DIR = "./TREC";
 
     protected static void configureLogger() {
@@ -43,6 +36,8 @@ public class TestTrecEval {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        Logger.getRootLogger().setLevel(Level.INFO);
     }
 
     /**
@@ -63,9 +58,13 @@ public class TestTrecEval {
     public static void main(String args[]) throws IOException {
         configureLogger();
 
+
+        //TODO zde vytvořte objekt vaší implementované třídy Index
         Index index = new Index();
 
         List<Topic> topics = SerializedDataHelper.loadTopic(new File(OUTPUT_DIR + "/topicData.bin"));
+
+        log.info("Topics: " + topics.size());
 
         File serializedData = new File(OUTPUT_DIR + "/czechData.bin");
 
@@ -91,7 +90,7 @@ public class TestTrecEval {
             //to ovlivní výsledné vyhledávání - zkuste změnit a uvidíte jaký MAP (Mean Average Precision) dostanete pro jednotlivé
             //kombinace např. pokud budete vyhledávat jen pomocí title (t.getTitle()) nebo jen pomocí description (t.getDescription())
             //nebo jejich kombinací (t.getTitle() + " " + t.getDescription())
-            List<Result> resultHits = index.search(t.getTitle() + " " + t.getDescription());
+            List<Result> resultHits = index.search(t.getTitle() + " " + t.getDescription() + "" + t.getNarrative());
 
             Comparator<Result> cmp = new Comparator<Result>() {
                 public int compare(Result o1, Result o2) {

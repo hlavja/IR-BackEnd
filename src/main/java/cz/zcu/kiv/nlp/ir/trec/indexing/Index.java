@@ -10,6 +10,8 @@ import org.apache.lucene.queryparser.flexible.precedence.PrecedenceQueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -25,6 +27,7 @@ import java.util.*;
  */
 @Data
 public class Index implements Indexer, Searcher {
+    private final Logger log = LoggerFactory.getLogger(Index.class);
 
     /**
      * Instance of inverted list
@@ -60,6 +63,7 @@ public class Index implements Indexer, Searcher {
      * @return list of results for query
      */
     public List<Result> search(String query) {
+        log.info("Searching:" + query);
         return search(query, SearchType.VECTOR_MODEL);
     }
 
