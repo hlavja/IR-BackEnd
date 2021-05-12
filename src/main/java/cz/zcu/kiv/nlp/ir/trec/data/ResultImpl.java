@@ -25,6 +25,12 @@ public class ResultImpl extends AbstractResult {
     public ResultImpl() {
     }
 
+    public ResultImpl(String documentID, float score, int rank) {
+        this.documentID = documentID;
+        this.score = score;
+        this.rank = rank;
+    }
+
     /**
      * Compare teo documents by its score
      * @param result comparing result to this one

@@ -11,6 +11,7 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,8 @@ import java.util.Map;
  * @author hlavj on 1.5.2021
  */
 @Data
-public class InvertedList {
+public class InvertedList implements Serializable {
+    private static final long serialVersionUID = -5697112945334105516L;
     private final Logger log = LoggerFactory.getLogger(InvertedList.class);
 
     /**

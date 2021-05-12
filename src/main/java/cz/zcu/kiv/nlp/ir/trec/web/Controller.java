@@ -4,6 +4,7 @@ import cz.zcu.kiv.nlp.ir.trec.data.ArticleRepository;
 import cz.zcu.kiv.nlp.ir.trec.data.Document;
 import cz.zcu.kiv.nlp.ir.trec.data.Result;
 import cz.zcu.kiv.nlp.ir.trec.dtos.ArticleModel;
+import cz.zcu.kiv.nlp.ir.trec.dtos.IndexStatus;
 import cz.zcu.kiv.nlp.ir.trec.dtos.QueryModel;
 import cz.zcu.kiv.nlp.ir.trec.dtos.QueryResultModel;
 import cz.zcu.kiv.nlp.ir.trec.indexing.Index;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,7 @@ public class Controller {
      * Init crawled data
      * @return http status determining successful/unsuccessful
      */
-    @GetMapping("/initData")
+    @GetMapping(value="/initData", produces={"application/json"})
     public ResponseEntity<String> initData () {
         index = new Index();
         articleRepository = new ArticleRepository();
@@ -50,7 +52,7 @@ public class Controller {
      * Init data from TREC file
      * @return http status determining successful/unsuccessful
      */
-    @GetMapping("/initTrec")
+    @GetMapping(value="/initTrec", produces={"application/json"})
     public ResponseEntity<String> initTrecData () {
         index = new Index();
         articleRepository = new ArticleRepository();
@@ -76,7 +78,6 @@ public class Controller {
             });
         }
 
-        index.index(documents);
         articleRepository.addArticles(articles);
         index.index(articleRepository.getArticlesAsDocument());
         return new ResponseEntity<>(HttpStatus.OK);
@@ -87,7 +88,7 @@ public class Controller {
      * @param queryModel query object
      * @return result model (results, number of documents)
      */
-    @PostMapping("/query")
+    @PostMapping(value="/query", produces={"application/json"})
     public QueryResultModel search(@RequestBody QueryModel queryModel) {
         List<Result> results;
         if (queryModel.isVectorModel()) {
@@ -117,9 +118,9 @@ public class Controller {
      * @param fileName filename to save index to
      * @return http status determining successful/unsuccessful
      */
-    @GetMapping("/saveIndex")
+    @GetMapping(value="/saveIndex", produces={"application/json"})
     public ResponseEntity<String> saveIndex (@RequestParam String fileName) {
-        if (Utils.saveIndex(index, fileName)){
+        if (Utils.saveIndex(index.getInvertedList(), fileName) && Utils.saveRepo(articleRepository.getArticles(), "repo_"+ fileName)){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -130,7 +131,7 @@ public class Controller {
      * Clearing index and repository
      * @return http status determining successful/unsuccessful
      */
-    @GetMapping("/clearIndex")
+    @GetMapping(value="/clearIndex", produces={"application/json"})
     public ResponseEntity<String> clearIndex() {
         index = new Index();
         articleRepository = new ArticleRepository();
@@ -142,13 +143,17 @@ public class Controller {
      * @param fileName filename to load index from
      * @return http status determining successful/unsuccessful
      */
-    @GetMapping("/loadIndex")
+    @GetMapping(value="/loadIndex", produces={"application/json"})
     public ResponseEntity<String> loadIndex (@RequestParam String fileName) {
         InvertedList loadedInvertedList;
+        HashMap<Integer, ArticleModel> articleModelHashMap;
         loadedInvertedList = Utils.loadIndex(fileName);
-        if (loadedInvertedList != null){
+        articleModelHashMap = Utils.loadRepository("repo_"+ fileName);
+        if (loadedInvertedList != null && articleModelHashMap != null){
             index = new Index();
             index.setInvertedIndex(loadedInvertedList);
+            articleRepository = new ArticleRepository();
+            articleRepository.setArticles(articleModelHashMap);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -160,7 +165,7 @@ public class Controller {
      * @param id article id
      * @return article in response object
      */
-    @GetMapping("/article/{id}")
+    @GetMapping(value="/article/{id}", produces={"application/json"})
     public QueryResultModel getArticleById(@PathVariable int id) {
         QueryResultModel response = new QueryResultModel();
         List<ArticleModel> articles = new ArrayList<>();
@@ -173,7 +178,7 @@ public class Controller {
      * Get all articles
      * @return articles in response object
      */
-    @GetMapping("/articles")
+    @GetMapping(value="/articles", produces={"application/json"})
     public QueryResultModel getArticles() {
         QueryResultModel response = new QueryResultModel();
         List<ArticleModel> articles = articleRepository.getAllArticles();
@@ -186,7 +191,7 @@ public class Controller {
      * @param id artidle id to delete
      * @return http status determining successful/unsuccessful
      */
-    @DeleteMapping("/article/{id}")
+    @DeleteMapping(value="/article/{id}", produces={"application/json"})
     public ResponseEntity<String> deleteArticle(@PathVariable int id) {
         articleRepository.removeById(id);
         index = new Index();
@@ -199,11 +204,16 @@ public class Controller {
      * @param article article object to update
      * @return updated article
      */
-    @PostMapping("/article")
+    @PostMapping(value="/article", produces={"application/json"})
     public ArticleModel updateArticle(@RequestBody ArticleModel article) {
         articleRepository.updateArticle(article);
         index = new Index();
         index.index(articleRepository.getArticlesAsDocument());
         return articleRepository.getArticleById(article.getId());
+    }
+
+    @GetMapping(value="/indexStatus", produces={"application/json"})
+    public IndexStatus checkIndexStatus() {
+        return new IndexStatus(index.getInvertedList().getInvertedList().size() > 0);
     }
 }

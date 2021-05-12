@@ -1,6 +1,8 @@
 package cz.zcu.kiv.nlp.ir.trec.preprocessing;
 
 
+import java.io.Serializable;
+
 /**
  * @author Dolamic Ljiljana  University of Neuchatel
  * <p>
@@ -8,8 +10,9 @@ package cz.zcu.kiv.nlp.ir.trec.preprocessing;
  * endings from names
  * and takes care of palatalisation
  */
-public class CzechStemmerLight implements Stemmer {
+public class CzechStemmerLight implements Stemmer, Serializable {
 
+    private static final long serialVersionUID = 2160345408561025801L;
     /**
      * A buffer of the current word being stemmed
      */

@@ -29,9 +29,13 @@ public class BooleanQuerySearch {
     public List<Result> getResultsForQuery(BooleanNode parsedQuery) {
         List<String> documentIds = processQuery(parsedQuery, false);
         List<Result> results = new ArrayList<>();
+        var ref = new Object() {
+            int rank = 1;
+        };
         documentIds.forEach(documentId -> {
-            Result newResult = new ResultImpl(documentId, 0);
+            Result newResult = new ResultImpl(documentId, 0, ref.rank);
             results.add(newResult);
+            ref.rank++;
         });
         return results;
     }

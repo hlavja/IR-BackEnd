@@ -13,6 +13,7 @@ import org.apache.lucene.search.TermQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -26,7 +27,8 @@ import java.util.*;
  *
  */
 @Data
-public class Index implements Indexer, Searcher {
+public class Index implements Indexer, Searcher, Serializable {
+    private static final long serialVersionUID = 7500132956422082675L;
     private final Logger log = LoggerFactory.getLogger(Index.class);
 
     /**
@@ -123,7 +125,11 @@ public class Index implements Indexer, Searcher {
      */
     private List<Result> getResults(HashMap<String, Double> cosineSimilarity) {
         List<Result> results = new ArrayList<>();
-        cosineSimilarity.forEach((key, value) -> results.add(new ResultImpl(key, value.floatValue())));
+        cosineSimilarity.forEach((key, value) -> {
+            if (!value.isNaN() && value != 0) {
+                results.add(new ResultImpl(key, value.floatValue()));
+            }
+        });
         Collections.sort(results);
         int rank = 1;
         for (Result result: results) {

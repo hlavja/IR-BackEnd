@@ -1,8 +1,8 @@
 package cz.zcu.kiv.nlp.ir.trec.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.zcu.kiv.nlp.ir.trec.data.ArticleRepository;
 import cz.zcu.kiv.nlp.ir.trec.dtos.ArticleModel;
-import cz.zcu.kiv.nlp.ir.trec.indexing.Index;
 import cz.zcu.kiv.nlp.ir.trec.indexing.InvertedList;
 
 import java.io.*;
@@ -136,9 +136,10 @@ public class Utils {
      * @param path filename of file to save index
      * @return if succeeded true, than false
      */
-    public static boolean saveIndex(Index index, String path) {
+    public static boolean saveIndex(InvertedList index, String path) {
         File file = new File(path);
         try {
+            Files.deleteIfExists(file.toPath());
             if (file.createNewFile()) {
                 final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
                 objectOutputStream.writeObject(index);
@@ -167,6 +168,53 @@ public class Utils {
                 invertedList = objectInputStream.readObject();
                 objectInputStream.close();
                 return (InvertedList) invertedList;
+            } else {
+                return null;
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Save in memory repository to file
+     * @param repository repository to save
+     * @param path path of file
+     * @return if succeeded true, than false
+     */
+    public static boolean saveRepo(HashMap<Integer, ArticleModel> repository, String path) {
+        File file = new File(path);
+        try {
+            Files.deleteIfExists(file.toPath());
+            if (file.createNewFile()) {
+                final ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+                objectOutputStream.writeObject(repository);
+                objectOutputStream.close();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Method for loading repository from file
+     * @param path filename of stored repository
+     * @return loaded repository or null if not loaded
+     */
+    public static HashMap<Integer, ArticleModel> loadRepository(String path) {
+        Object repository;
+        try {
+            File file = new File(path);
+            if (file.isFile()) {
+                final ObjectInputStream objectInputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+                repository = objectInputStream.readObject();
+                objectInputStream.close();
+                return (HashMap<Integer, ArticleModel>) repository;
             } else {
                 return null;
             }

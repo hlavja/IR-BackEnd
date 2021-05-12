@@ -1,6 +1,7 @@
 package cz.zcu.kiv.nlp.ir.trec.data;
 
 import cz.zcu.kiv.nlp.ir.trec.dtos.ArticleModel;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,13 +12,14 @@ import java.util.List;
  * Repository of articles saved in actual index
  * @author hlavj on 1.5.2021
  */
+@Data
 public class ArticleRepository implements Serializable {
 
     private static final long serialVersionUID = -8927068736199058148L;
     /**
      * Representation of database table [id, value]
      */
-    private final HashMap<Integer, ArticleModel> articles = new HashMap<>();
+    private HashMap<Integer, ArticleModel> articles = new HashMap<>();
     /**
      * Auto increment index of repository
      */

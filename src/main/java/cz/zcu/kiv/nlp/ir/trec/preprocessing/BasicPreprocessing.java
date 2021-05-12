@@ -2,6 +2,7 @@ package cz.zcu.kiv.nlp.ir.trec.preprocessing;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -9,8 +10,9 @@ import java.util.Set;
 /**
  * Created by Tigi on 29.2.2016.
  */
-public class BasicPreprocessing implements Preprocessing {
+public class BasicPreprocessing implements Preprocessing, Serializable {
 
+    private static final long serialVersionUID = 8801846219057684547L;
     Map<String, Integer> wordFrequencies = new HashMap<>();
     Stemmer stemmer;
     Tokenizer tokenizer;
