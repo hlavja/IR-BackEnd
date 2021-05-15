@@ -65,7 +65,7 @@ public class Index implements Indexer, Searcher, Serializable {
      * @return list of results for query
      */
     public List<Result> search(String query) {
-        log.info("Searching:" + query);
+        log.info("Searching: " + query);
         return search(query, SearchType.VECTOR_MODEL);
     }
 

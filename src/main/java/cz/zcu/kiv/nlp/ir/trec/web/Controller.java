@@ -29,8 +29,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class Controller {
     private final Logger log = LoggerFactory.getLogger(Controller.class);
-    ArticleRepository articleRepository = new ArticleRepository();
-    Index index = new Index();
+    HashMap<String, Index> indexes = new HashMap<>();
+    HashMap<String, ArticleRepository> repositories = new HashMap<>();
+    private static final String MY_DATA_INDEX_NAME = "myData";
+    private static final String TREC_DATA_INDEX_NAME = "trecData";
+
 
     /**
      * Init crawled data
@@ -38,10 +41,10 @@ public class Controller {
      */
     @GetMapping(value="/initData", produces={"application/json"})
     public ResponseEntity<String> initData () {
-        index = new Index();
-        articleRepository = new ArticleRepository();
-        articleRepository.addArticles(Utils.importArticlesFromFile(Constants.DATA_FILE_PATH));
-        index.index(articleRepository.getArticlesAsDocument());
+        indexes.put(MY_DATA_INDEX_NAME, new Index());
+        repositories.put(MY_DATA_INDEX_NAME, new ArticleRepository());
+        repositories.get(MY_DATA_INDEX_NAME).addArticles(Utils.importArticlesFromFile(Constants.DATA_FILE_PATH));
+        indexes.get(MY_DATA_INDEX_NAME).index(repositories.get(MY_DATA_INDEX_NAME).getArticlesAsDocument());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -51,8 +54,8 @@ public class Controller {
      */
     @GetMapping(value="/initTrec", produces={"application/json"})
     public ResponseEntity<String> initTrecData () {
-        index = new Index();
-        articleRepository = new ArticleRepository();
+        indexes.put(TREC_DATA_INDEX_NAME, new Index());
+        repositories.put(TREC_DATA_INDEX_NAME, new ArticleRepository());
 
         File serializedData = new File(Constants.OUTPUT_DIR + "/czechData.bin");
         List<Document> documents = new ArrayList<>();
@@ -75,8 +78,8 @@ public class Controller {
             });
         }
 
-        articleRepository.addArticles(articles);
-        index.index(articleRepository.getArticlesAsDocument());
+        repositories.get(TREC_DATA_INDEX_NAME).addArticles(articles);
+        indexes.get(TREC_DATA_INDEX_NAME).index(repositories.get(TREC_DATA_INDEX_NAME).getArticlesAsDocument());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -89,9 +92,9 @@ public class Controller {
     public QueryResultModel search(@RequestBody QueryModel queryModel) {
         List<Result> results;
         if (queryModel.isVectorModel()) {
-            results = index.search(queryModel.getQuery());
+            results = indexes.get(queryModel.getIndexName()).search(queryModel.getQuery());
         } else {
-            results = index.search(queryModel.getQuery(), SearchType.BOOLEAN_MODEL);
+            results = indexes.get(queryModel.getIndexName()).search(queryModel.getQuery(), SearchType.BOOLEAN_MODEL);
         }
         int numberOfResults;
         if (queryModel.getNumberOfResults() == null || queryModel.getNumberOfResults() < Constants.MIN_RESULTS) {
@@ -102,7 +105,7 @@ public class Controller {
         List<Result> filteredResults = results.stream().limit(numberOfResults).collect(Collectors.toList());
         List<ArticleModel> articles = new ArrayList<>();
         filteredResults.forEach(result -> {
-            ArticleModel article = articleRepository.getArticleById(Integer.parseInt(result.getDocumentID()));
+            ArticleModel article = repositories.get(queryModel.getIndexName()).getArticleById(Integer.parseInt(result.getDocumentID()));
             article.setScore(result.getScore());
             article.setRank(result.getRank());
             articles.add(article);
@@ -117,7 +120,7 @@ public class Controller {
      */
     @GetMapping(value="/saveIndex", produces={"application/json"})
     public ResponseEntity<String> saveIndex (@RequestParam String fileName) {
-        if (Utils.saveIndex(index.getInvertedList(), fileName) && Utils.saveRepo(articleRepository.getArticles(), "repo_"+ fileName)){
+        if (Utils.saveIndex(indexes.get(fileName).getInvertedList(), fileName) && Utils.saveRepo(repositories.get(fileName).getArticles(), "repo_"+ fileName)){
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -125,13 +128,13 @@ public class Controller {
     }
 
     /**
-     * Clearing index and repository
+     * Clearing indexes and repositories
      * @return http status determining successful/unsuccessful
      */
     @GetMapping(value="/clearIndex", produces={"application/json"})
     public ResponseEntity<String> clearIndex() {
-        index = new Index();
-        articleRepository = new ArticleRepository();
+        indexes.clear();
+        repositories.clear();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -147,10 +150,10 @@ public class Controller {
         loadedInvertedList = Utils.loadIndex(fileName);
         articleModelHashMap = Utils.loadRepository("repo_"+ fileName);
         if (loadedInvertedList != null && articleModelHashMap != null){
-            index = new Index();
-            index.setInvertedIndex(loadedInvertedList);
-            articleRepository = new ArticleRepository();
-            articleRepository.setArticles(articleModelHashMap);
+            indexes.put(fileName, new Index());
+            indexes.get(fileName).setInvertedIndex(loadedInvertedList);
+            repositories.put(fileName, new ArticleRepository());
+            repositories.get(fileName).setArticles(articleModelHashMap);
             return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -160,53 +163,61 @@ public class Controller {
     /**
      * Get article by ID
      * @param id article id
+     * @param indexName name of index
      * @return article in response object
      */
     @GetMapping(value="/article/{id}", produces={"application/json"})
-    public QueryResultModel getArticleById(@PathVariable int id) {
+    public QueryResultModel getArticleById(@PathVariable int id, @RequestParam String indexName) {
         QueryResultModel response = new QueryResultModel();
         List<ArticleModel> articles = new ArrayList<>();
-        articles.add(articleRepository.getArticleById(id));
+        articles.add(repositories.get(indexName).getArticleById(id));
         response.setArticles(articles);
         return response;
     }
 
     /**
      * Get all articles
+     * @param indexName name of index
      * @return articles in response object
      */
     @GetMapping(value="/articles", produces={"application/json"})
-    public QueryResultModel getArticles() {
+    public QueryResultModel getArticles(@RequestParam String indexName) {
         QueryResultModel response = new QueryResultModel();
-        List<ArticleModel> articles = articleRepository.getAllArticles();
-        response.setArticles(articles);
+        List<ArticleModel> articles = repositories.get(indexName).getAllArticles();
+        if (indexName.equals(TREC_DATA_INDEX_NAME)) {
+            response.setArticles(articles.subList(0, 200));
+        } else {
+            response.setArticles(articles);
+        }
         return response;
     }
 
     /**
      * Delete article by id
      * @param id artidle id to delete
+     * @param indexName name of index
      * @return http status determining successful/unsuccessful
      */
     @DeleteMapping(value="/article/{id}", produces={"application/json"})
-    public ResponseEntity<String> deleteArticle(@PathVariable int id) {
-        articleRepository.removeById(id);
-        index = new Index();
-        index.index(articleRepository.getArticlesAsDocument());
+    public ResponseEntity<String> deleteArticle(@PathVariable int id, @RequestParam String indexName) {
+        repositories.get(indexName).removeById(id);
+        indexes.put(indexName, new Index());
+        indexes.get(indexName).index(repositories.get(indexName).getArticlesAsDocument());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
      * Update existing article in repository
      * @param article article object to update
+     * @param indexName name of index
      * @return updated article
      */
     @PostMapping(value="/article", produces={"application/json"})
-    public ArticleModel updateArticle(@RequestBody ArticleModel article) {
-        articleRepository.updateArticle(article);
-        index = new Index();
-        index.index(articleRepository.getArticlesAsDocument());
-        return articleRepository.getArticleById(article.getId());
+    public ArticleModel updateArticle(@RequestBody ArticleModel article, @RequestParam String indexName) {
+        repositories.get(indexName).updateArticle(article);
+        indexes.put(indexName, new Index());
+        indexes.get(indexName).index(repositories.get(indexName).getArticlesAsDocument());
+        return repositories.get(indexName).getArticleById(article.getId());
     }
 
     /**
@@ -214,8 +225,10 @@ public class Controller {
      * @return status of index
      */
     @GetMapping(value="/indexStatus", produces={"application/json"})
-    public IndexStatus checkIndexStatus() {
-        return new IndexStatus(index.getInvertedList().getInvertedList().size() > 0);
+    public List<IndexStatus> checkIndexStatus() {
+        List<IndexStatus> indexStatusList = new ArrayList<>();
+        indexes.forEach((key, index) -> indexStatusList.add(new IndexStatus(index.getInvertedList().getInvertedList().size() > 0, key)));
+        return indexStatusList;
     }
 
     /**
@@ -223,8 +236,14 @@ public class Controller {
      * @return sate of saved index
      */
     @GetMapping(value = "/savedIndex", produces = "application/json")
-    public SavedIndexStatus checkSavedIndexState() {
-        File file = new File("index");
-        return new SavedIndexStatus(file.exists());
+    public List<SavedIndexStatus> checkSavedIndexState() {
+        List<SavedIndexStatus> savedIndexStatusList = new ArrayList<>();
+        if (new File(MY_DATA_INDEX_NAME).exists()) {
+            savedIndexStatusList.add(new SavedIndexStatus(true, MY_DATA_INDEX_NAME));
+        }
+        if (new File(TREC_DATA_INDEX_NAME).exists()) {
+            savedIndexStatusList.add(new SavedIndexStatus(true, TREC_DATA_INDEX_NAME));
+        }
+        return savedIndexStatusList;
     }
 }

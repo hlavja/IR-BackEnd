@@ -31,4 +31,9 @@ public class QueryModel implements Serializable {
      * Number of results to return back ti the frontend
      */
     private Integer numberOfResults;
+
+    /**
+     * Name of index to search in
+     */
+    private String indexName;
 }
