@@ -33,7 +33,7 @@ public class BooleanQuerySearch {
             int rank = 1;
         };
         documentIds.forEach(documentId -> {
-            Result newResult = new ResultImpl(documentId, 0, ref.rank);
+            Result newResult = new ResultImpl(documentId, 1, ref.rank);
             results.add(newResult);
             ref.rank++;
         });
