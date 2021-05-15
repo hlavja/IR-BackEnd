@@ -3,10 +3,7 @@ package cz.zcu.kiv.nlp.ir.trec.web;
 import cz.zcu.kiv.nlp.ir.trec.data.ArticleRepository;
 import cz.zcu.kiv.nlp.ir.trec.data.Document;
 import cz.zcu.kiv.nlp.ir.trec.data.Result;
-import cz.zcu.kiv.nlp.ir.trec.dtos.ArticleModel;
-import cz.zcu.kiv.nlp.ir.trec.dtos.IndexStatus;
-import cz.zcu.kiv.nlp.ir.trec.dtos.QueryModel;
-import cz.zcu.kiv.nlp.ir.trec.dtos.QueryResultModel;
+import cz.zcu.kiv.nlp.ir.trec.dtos.*;
 import cz.zcu.kiv.nlp.ir.trec.indexing.Index;
 import cz.zcu.kiv.nlp.ir.trec.config.Constants;
 import cz.zcu.kiv.nlp.ir.trec.indexing.InvertedList;
@@ -212,8 +209,22 @@ public class Controller {
         return articleRepository.getArticleById(article.getId());
     }
 
+    /**
+     * Get info if backend have indexed data
+     * @return status of index
+     */
     @GetMapping(value="/indexStatus", produces={"application/json"})
     public IndexStatus checkIndexStatus() {
         return new IndexStatus(index.getInvertedList().getInvertedList().size() > 0);
+    }
+
+    /**
+     * Get info if server has saved index
+     * @return sate of saved index
+     */
+    @GetMapping(value = "/savedIndex", produces = "application/json")
+    public SavedIndexStatus checkSavedIndexState() {
+        File file = new File("index");
+        return new SavedIndexStatus(file.exists());
     }
 }

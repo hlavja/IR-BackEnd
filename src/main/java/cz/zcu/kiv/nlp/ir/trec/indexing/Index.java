@@ -163,8 +163,8 @@ public class Index implements Indexer, Searcher, Serializable {
      */
     private void queryTree(BooleanNode root, Query query) {
         if (query instanceof TermQuery) {
-            root.setTermBoolean(true);
-            root.setTerm(this.invertedList.getPreprocessing().getProcessedForm(((TermQuery)query).getTerm().text()));
+            root.setTerm(true);
+            root.setTermString(this.invertedList.getPreprocessing().getProcessedForm(((TermQuery)query).getTerm().text()));
         } else {
             BooleanQuery booleanQuery = (BooleanQuery) query;
             booleanQuery.forEach(booleanClause -> {
@@ -172,11 +172,11 @@ public class Index implements Indexer, Searcher, Serializable {
                 root.addLeaf(booleanClause.getOccur(), leaf);
 
                 if (booleanClause.getQuery() instanceof BooleanQuery) { // is operand so need to process again
-                    leaf.setTerm(booleanClause.getQuery().toString());
+                    leaf.setTermString(booleanClause.getQuery().toString());
                     queryTree(leaf, booleanClause.getQuery()); // recursion for processing whole query
                 } else if (booleanClause.getQuery() instanceof  TermQuery) { // is term so insert in tree
-                    leaf.setTermBoolean(true);
-                    leaf.setTerm(this.invertedList.getPreprocessing().getProcessedForm(booleanClause.getQuery().toString())); // preprocessing query term
+                    leaf.setTerm(true);
+                    leaf.setTermString(this.invertedList.getPreprocessing().getProcessedForm(booleanClause.getQuery().toString())); // preprocessing query term
                 }
             });
         }

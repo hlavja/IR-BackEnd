@@ -47,19 +47,19 @@ public class BooleanQuerySearch {
      * @return list of documents for query
      */
     private List<String> processQuery(BooleanNode node, boolean notOperator) {
-        if (node.isTermBoolean()) { // is term
+        if (node.isTerm()) { // is term
             if (notOperator) { // negation
                 HashMap<String, Integer> allDocuments = new HashMap<>();
                 invertedList.getInvertedList().forEach((key, value) -> { // get all documents unique
                     allDocuments.putAll(value);
                 });
-                HashMap<String, Integer> documentsWithTerm = getDocumentsWithTerm(node.getTerm());
+                HashMap<String, Integer> documentsWithTerm = getDocumentsWithTerm(node.getTermString());
                 documentsWithTerm.forEach((key, value) -> allDocuments.remove(key)); // remove documents with term
                 List<String> documents = new ArrayList<>();
                 allDocuments.forEach((key, value) -> documents.add(key));
                 return documents;
             } else {
-                HashMap<String, Integer> documentsWithTerm = getDocumentsWithTerm(node.getTerm());
+                HashMap<String, Integer> documentsWithTerm = getDocumentsWithTerm(node.getTermString());
                 List<String> documents = new ArrayList<>();
                 documentsWithTerm.forEach((key, value) -> documents.add(key)); // documents with therm
                 return documents;

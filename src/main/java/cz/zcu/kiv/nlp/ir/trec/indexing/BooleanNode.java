@@ -17,12 +17,12 @@ public class BooleanNode {
     /**
      * Searching term
      */
-    private String term;
+    private String termString;
 
     /**
      * Determines if is term a boolean operand
      */
-    private boolean isTermBoolean;
+    private boolean isTerm;
 
     /**
      * Hashmap of leaves of this node

@@ -1,7 +1,4 @@
-package cz.zcu.kiv.nlp.ir.trec.dtos;/*
- * @version 12.05.2021
- * @author hlavj
- */
+package cz.zcu.kiv.nlp.ir.trec.dtos;
 
 import lombok.Data;
 
