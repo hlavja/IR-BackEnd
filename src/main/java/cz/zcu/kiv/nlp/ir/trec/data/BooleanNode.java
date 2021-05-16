@@ -1,4 +1,4 @@
-package cz.zcu.kiv.nlp.ir.trec.indexing;
+package cz.zcu.kiv.nlp.ir.trec.data;
 
 import lombok.Data;
 import org.apache.lucene.search.BooleanClause;

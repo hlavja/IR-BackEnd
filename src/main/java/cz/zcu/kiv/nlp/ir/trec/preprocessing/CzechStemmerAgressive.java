@@ -10,7 +10,7 @@ public class CzechStemmerAgressive implements Stemmer{
     /**
      * A buffer of the current word being stemmed
      */
-    private StringBuffer sb=new StringBuffer();
+    private final StringBuffer sb=new StringBuffer();
 
     /**
      * Default constructor
@@ -37,8 +37,7 @@ public class CzechStemmerAgressive implements Stemmer{
         //removes derivational sufixes from nouns
         removeDerivational(sb);
 
-       String result = sb.toString();
-        return result;
+        return sb.toString();
     }
     private void removeDerivational(StringBuffer buffer) {
         int len=buffer.length();
@@ -235,7 +234,6 @@ public class CzechStemmerAgressive implements Stemmer{
                 buffer.substring( len- 2 ,len).equals("\00e1k")){ //-ák
 
             buffer.delete( len- 2 , len);
-            return;
         }
 
     }
@@ -333,7 +331,6 @@ public class CzechStemmerAgressive implements Stemmer{
                 buffer.substring( len- 1 ,len).equals("k")){
 
             buffer.delete( len- 1, len);
-            return;
         }
     }//removeDiminutives
 
@@ -346,7 +343,6 @@ public class CzechStemmerAgressive implements Stemmer{
 
             buffer.delete( len- 2 , len);
             palatalise(buffer);
-            return;
         }
 
     }
@@ -385,7 +381,6 @@ public class CzechStemmerAgressive implements Stemmer{
             return;
         }
         buffer.delete( len- 1 , len);
-        return;
     }//palatalise
 
     private void removePossessives(StringBuffer buffer) {
@@ -406,7 +401,6 @@ public class CzechStemmerAgressive implements Stemmer{
 
                 buffer.delete( len- 1 , len);
                 palatalise(buffer);
-                return;
             }
         }
     }//removePossessives
@@ -530,7 +524,6 @@ public class CzechStemmerAgressive implements Stemmer{
                     buffer.substring( len-1,len).equals("\u00fd")){   //-ý
 
                 buffer.delete( len- 1 , len);
-                return;
             }
         }//len>3
     }

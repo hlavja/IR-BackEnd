@@ -1,5 +1,6 @@
 package cz.zcu.kiv.nlp.ir.trec.indexing;
 
+import cz.zcu.kiv.nlp.ir.trec.data.BooleanNode;
 import cz.zcu.kiv.nlp.ir.trec.data.Result;
 import cz.zcu.kiv.nlp.ir.trec.data.ResultImpl;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author hlavj on 1.5.2021
  */
 @Data
-public class BooleanQuerySearch {
+public class BooleanSearch {
     /**
      * Inverted index with indexed data
      */
@@ -41,7 +42,7 @@ public class BooleanQuerySearch {
     }
 
     /**
-     * Recursively process the tree of boolean querry
+     * Recursively process the tree of boolean query
      * @param node node of tree
      * @param notOperator if is used NOT operator
      * @return list of documents for query
