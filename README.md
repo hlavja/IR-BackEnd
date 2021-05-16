@@ -1,0 +1,2 @@
+# InformationRetrieval - BackEnd
+Docker friendly.
