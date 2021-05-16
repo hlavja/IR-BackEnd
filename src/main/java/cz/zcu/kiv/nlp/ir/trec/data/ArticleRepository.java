@@ -41,7 +41,7 @@ public class ArticleRepository implements Serializable {
         article.setId(id);
         articles.put(id, article);
         id++;
-        return id;
+        return article.getId();
     }
 
     /**
