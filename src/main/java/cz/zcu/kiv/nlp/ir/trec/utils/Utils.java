@@ -223,4 +223,33 @@ public class Utils {
             return null;
         }
     }
+
+    /**
+     * Read lines from the stream; lines are trimmed and empty lines are ignored.
+     *
+     * @param inputStream stream
+     * @return list of lines
+     */
+    public static List<String> readTXTFile(InputStream inputStream) {
+        if (inputStream == null) {
+            throw new IllegalArgumentException("Cannot locate stream");
+        }
+        try {
+            List<String> result = new ArrayList<String>();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    result.add(line.trim());
+                }
+            }
+            inputStream.close();
+
+            return result;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 }

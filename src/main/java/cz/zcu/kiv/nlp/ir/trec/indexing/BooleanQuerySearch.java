@@ -173,10 +173,10 @@ public class BooleanQuerySearch {
     private List<String> checkEmptyLists(List<String> firstList, List<String> secondList) {
         if (firstList.isEmpty() && secondList.isEmpty()) { // both empty
             return new ArrayList<>();
-        } else if (firstList.isEmpty()) { // first empty return second
-            return secondList;
         } else if (secondList.isEmpty()) { // second empty return first
             return firstList;
+        } else if (firstList.isEmpty()) { // first empty return second
+            return secondList;
         } else {
             return null;
         }

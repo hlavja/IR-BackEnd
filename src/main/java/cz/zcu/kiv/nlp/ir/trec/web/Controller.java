@@ -208,6 +208,12 @@ public class Controller {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * Adding new article to index
+     * @param article new article to add
+     * @param indexName index to add article to
+     * @return added article
+     */
     @PutMapping(value = "/article", produces = "application/json")
     public ArticleModel addArticle(@RequestBody ArticleModel article, @RequestParam String indexName) {
         article.setDownloadDate(new Date());
