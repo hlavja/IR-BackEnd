@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Model of server response to frontend
+ * query evaluation
  * @author hlavj on 1.5.2021
  */
 @Data

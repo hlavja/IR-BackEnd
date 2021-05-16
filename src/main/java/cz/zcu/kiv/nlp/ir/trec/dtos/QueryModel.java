@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * DTO for communication with frontend
+ * query model
  * @author hlavj on 1.5.2021
  */
 @Data
