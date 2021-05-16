@@ -1,5 +1,6 @@
 cz.zcu.kiv.nlp.ir.trec
 cz.zcu.kiv.nlp.ir.trec.config
+cz.zcu.kiv.nlp.ir.trec.crawler
 cz.zcu.kiv.nlp.ir.trec.data
 cz.zcu.kiv.nlp.ir.trec.dtos
 cz.zcu.kiv.nlp.ir.trec.indexing
