@@ -23,7 +23,7 @@ public class ArticleRepository implements Serializable {
     /**
      * Auto increment index of repository
      */
-    private int id = 1;
+    private int id = 0;
 
     /**
      * Method for batch process of articles
@@ -37,10 +37,11 @@ public class ArticleRepository implements Serializable {
      * Add one article to repository
      * @param article article to add
      */
-    public void addArticle(ArticleModel article) {
+    public int addArticle(ArticleModel article) {
         article.setId(id);
         articles.put(id, article);
         id++;
+        return id;
     }
 
     /**

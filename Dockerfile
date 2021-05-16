@@ -7,7 +7,7 @@ RUN mvn clean package
 FROM adoptopenjdk:11-jre-hotspot
 COPY --from=build /usr/ir/target/*.jar ir.jar
 COPY ./stopWords.txt stopWords.txt
-COPY ./data/articlesFull.json ./data/articles.json
+COPY ./data/articles.json ./data/articles.json
 COPY ./TREC/czechData.bin ./TREC/czechData.bin
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","ir.jar"]

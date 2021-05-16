@@ -2,6 +2,7 @@ package cz.zcu.kiv.nlp.ir.trec.web;
 
 import cz.zcu.kiv.nlp.ir.trec.data.ArticleRepository;
 import cz.zcu.kiv.nlp.ir.trec.data.Document;
+import cz.zcu.kiv.nlp.ir.trec.data.DocumentNew;
 import cz.zcu.kiv.nlp.ir.trec.data.Result;
 import cz.zcu.kiv.nlp.ir.trec.dtos.*;
 import cz.zcu.kiv.nlp.ir.trec.indexing.Index;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -204,6 +206,19 @@ public class Controller {
         indexes.put(indexName, new Index());
         indexes.get(indexName).index(repositories.get(indexName).getArticlesAsDocument());
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/article", produces = "application/json")
+    public ArticleModel addArticle(@RequestBody ArticleModel article, @RequestParam String indexName) {
+        article.setDownloadDate(new Date());
+        article.setRank(-1);
+        article.setScore(-1);
+        int articleId = repositories.get(indexName).addArticle(article);
+        article.setId(articleId);
+        List<Document> articlesToDocuments = new ArrayList<>();
+        articlesToDocuments.add(new DocumentNew(article.getContent(), Integer.toString(articleId), article.getTitle(), article.getPublished()));
+        indexes.get(indexName).index(articlesToDocuments);
+        return article;
     }
 
     /**
