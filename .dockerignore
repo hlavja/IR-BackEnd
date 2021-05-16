@@ -1,2 +1,6 @@
 .idea
 target
+/repo_trecData
+/trecData
+/repo_myData
+/myData

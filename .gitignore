@@ -32,3 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 /TREC/czechData.bin
+/repo_trecData
+/trecData
+/repo_myData
+/myData
