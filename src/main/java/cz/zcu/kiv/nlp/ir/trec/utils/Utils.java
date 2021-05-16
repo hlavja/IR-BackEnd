@@ -183,7 +183,7 @@ public class Utils {
      * @param path path of file
      * @return if succeeded true, than false
      */
-    public static boolean saveRepo(HashMap<Integer, ArticleModel> repository, String path) {
+    public static boolean saveRepo(ArticleRepository repository, String path) {
         File file = new File(path);
         try {
             Files.deleteIfExists(file.toPath());
@@ -206,7 +206,7 @@ public class Utils {
      * @param path filename of stored repository
      * @return loaded repository or null if not loaded
      */
-    public static HashMap<Integer, ArticleModel> loadRepository(String path) {
+    public static ArticleRepository loadRepository(String path) {
         Object repository;
         try {
             File file = new File(path);
@@ -214,7 +214,7 @@ public class Utils {
                 final ObjectInputStream objectInputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
                 repository = objectInputStream.readObject();
                 objectInputStream.close();
-                return (HashMap<Integer, ArticleModel>) repository;
+                return (ArticleRepository) repository;
             } else {
                 return null;
             }
@@ -235,7 +235,7 @@ public class Utils {
             throw new IllegalArgumentException("Cannot locate stream");
         }
         try {
-            List<String> result = new ArrayList<String>();
+            List<String> result = new ArrayList<>();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
             String line;

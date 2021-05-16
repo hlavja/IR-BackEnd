@@ -1,9 +1,6 @@
 package cz.zcu.kiv.nlp.ir.trec.indexing;
 
-import cz.zcu.kiv.nlp.ir.trec.data.Document;
-import cz.zcu.kiv.nlp.ir.trec.data.DocumentNew;
-import cz.zcu.kiv.nlp.ir.trec.data.Result;
-import cz.zcu.kiv.nlp.ir.trec.data.ResultImpl;
+import cz.zcu.kiv.nlp.ir.trec.data.*;
 import lombok.Data;
 import org.apache.lucene.queryparser.flexible.core.QueryNodeException;
 import org.apache.lucene.queryparser.flexible.precedence.PrecedenceQueryParser;
@@ -32,6 +29,11 @@ public class Index implements Indexer, Searcher, Serializable {
     private final Logger log = LoggerFactory.getLogger(Index.class);
 
     /**
+     * Instance of index article repository
+     */
+    private ArticleRepository articleRepository = new ArticleRepository();
+
+    /**
      * Instance of inverted list
      */
     private InvertedList invertedList = new InvertedList();
@@ -40,14 +42,6 @@ public class Index implements Indexer, Searcher, Serializable {
      * Instance of Lucene parser
      */
     private final PrecedenceQueryParser parser = new PrecedenceQueryParser();
-
-    /**
-     * Constructor with predefined inverted list
-     * @param invertedList predefined inverted list
-     */
-    public void setInvertedIndex(InvertedList invertedList) {
-        this.invertedList = invertedList;
-    }
 
     /**
      * Method for indexing documents to inverted list
@@ -68,7 +62,6 @@ public class Index implements Indexer, Searcher, Serializable {
         log.info("Searching: " + query);
         return search(query, SearchType.VECTOR_MODEL);
     }
-
 
     /**
      * Search in inverted list
@@ -113,9 +106,9 @@ public class Index implements Indexer, Searcher, Serializable {
             e.printStackTrace();
             return null;
         }
-        BooleanQuerySearch booleanQuerySearch = new BooleanQuerySearch();
-        booleanQuerySearch.setInvertedList(invertedList);
-        return booleanQuerySearch.getResultsForQuery(parsedQuery); // get result for parsed query
+        BooleanSearch booleanSearch = new BooleanSearch();
+        booleanSearch.setInvertedList(invertedList);
+        return booleanSearch.getResultsForQuery(parsedQuery); // get result for parsed query
     }
 
     /**
