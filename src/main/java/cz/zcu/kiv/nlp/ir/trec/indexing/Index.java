@@ -59,7 +59,6 @@ public class Index implements Indexer, Searcher, Serializable {
      * @return list of results for query
      */
     public List<Result> search(String query) {
-        log.info("Searching: " + query);
         return search(query, SearchType.VECTOR_MODEL);
     }
 
@@ -70,6 +69,7 @@ public class Index implements Indexer, Searcher, Serializable {
      * @return list of results for query
      */
     public List<Result> search (String query, SearchType searchType) {
+        log.info("Searching: " + query);
         switch (searchType) { // determine which model to use
             case VECTOR_MODEL:
                 return vectorSearch(query);
@@ -86,6 +86,7 @@ public class Index implements Indexer, Searcher, Serializable {
      * @return list od results for query
      */
     private List<Result> vectorSearch(String query) {
+        log.info("Searching vector!");
         invertedList.addDocumentToInvertedList(new DocumentNew(query, "q01", new Date()), true); // index query
         invertedList.calculateTfIdf(); // recalculate TF-IDF
         HashMap<String, Double> cosineSimilarity = invertedList.calculateCosineSimilarity();
@@ -99,6 +100,7 @@ public class Index implements Indexer, Searcher, Serializable {
      * @return list of results for query
      */
     private List<Result> booleanSearch(String query) {
+        log.info("Searching boolean!");
         BooleanNode parsedQuery;
         try {
             parsedQuery = parseQuery(query); // parse query and create tree
