@@ -177,6 +177,11 @@ public class Index implements Indexer, Searcher, Serializable {
         }
     }
 
+    /**
+     * Return preprocessed query terms
+     * @param query query string
+     * @return preprocessed query as list
+     */
     public List<String> getPreprocessedSearchWords(String query) {
         String[] queryWords = query.split(" ");
         for (int i = 0; i < queryWords.length; i++) {
