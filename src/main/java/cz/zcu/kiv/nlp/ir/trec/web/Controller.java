@@ -95,6 +95,7 @@ public class Controller {
         } else {
             results = indexes.get(queryModel.getIndexName()).search(queryModel.getQuery(), SearchType.BOOLEAN_MODEL);
         }
+        List<String> preprocessedWords =  indexes.get(queryModel.getIndexName()).getPreprocessedSearchWords(queryModel.getQuery());
         int numberOfResults;
         if (queryModel.getNumberOfResults() == null || queryModel.getNumberOfResults() < Constants.MIN_RESULTS) {
             numberOfResults = Constants.MIN_RESULTS;
@@ -109,7 +110,7 @@ public class Controller {
             article.setRank(result.getRank());
             articles.add(article);
         });
-        return new QueryResultModel(articles, results.size());
+        return new QueryResultModel(articles, results.size(), preprocessedWords);
     }
 
     /**

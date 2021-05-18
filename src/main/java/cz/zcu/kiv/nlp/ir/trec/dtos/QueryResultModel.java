@@ -20,15 +20,21 @@ public class QueryResultModel implements Serializable {
     public QueryResultModel() {
     }
 
-    public QueryResultModel(List<ArticleModel> articles, Integer documentsCount) {
+    public QueryResultModel(List<ArticleModel> articles, Integer documentsCount, List<String> searchWords) {
         this.articles = articles;
         this.documentsCount = documentsCount;
+        this.searchWords = searchWords;
     }
 
     /**
      * List of articles
      */
     private List<ArticleModel> articles;
+
+    /**
+     * List of preprocessed search words
+     */
+    private List<String> searchWords;
 
     /**
      * Number of articles for given query

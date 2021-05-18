@@ -11,12 +11,68 @@
     }
   ],
   "paths": {
-    "/api/clearIndex": {
+    "/api/article/{id}": {
       "get": {
         "tags": [
           "controller"
         ],
-        "operationId": "clearIndex",
+        "operationId": "getArticleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "indexName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryResultModel"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "controller"
+        ],
+        "operationId": "deleteArticle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "indexName",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "default response",
@@ -107,22 +163,76 @@
         }
       }
     },
-    "/api/article/{id}": {
+    "/api/indexStatus": {
       "get": {
         "tags": [
           "controller"
         ],
-        "operationId": "getArticleById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
+        "operationId": "checkIndexStatus",
+        "responses": {
+          "200": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/IndexStatus"
+                  }
+                }
+              }
             }
-          },
+          }
+        }
+      }
+    },
+    "/api/clearIndex": {
+      "get": {
+        "tags": [
+          "controller"
+        ],
+        "operationId": "clearIndex",
+        "responses": {
+          "200": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/initTrec": {
+      "get": {
+        "tags": [
+          "controller"
+        ],
+        "operationId": "initTrecData",
+        "responses": {
+          "200": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles": {
+      "get": {
+        "tags": [
+          "controller"
+        ],
+        "operationId": "getArticles",
+        "parameters": [
           {
             "name": "indexName",
             "in": "query",
@@ -144,24 +254,60 @@
             }
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/api/initData": {
+      "get": {
         "tags": [
           "controller"
         ],
-        "operationId": "deleteArticle",
+        "operationId": "initData",
+        "responses": {
+          "200": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/savedIndex": {
+      "get": {
+        "tags": [
+          "controller"
+        ],
+        "operationId": "checkSavedIndexState",
+        "responses": {
+          "200": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SavedIndexStatus"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/loadIndex": {
+      "get": {
+        "tags": [
+          "controller"
+        ],
+        "operationId": "loadIndex",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "indexName",
+            "name": "fileName",
             "in": "query",
             "required": true,
             "schema": {
@@ -213,109 +359,6 @@
         }
       }
     },
-    "/api/initData": {
-      "get": {
-        "tags": [
-          "controller"
-        ],
-        "operationId": "initData",
-        "responses": {
-          "200": {
-            "description": "default response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/loadIndex": {
-      "get": {
-        "tags": [
-          "controller"
-        ],
-        "operationId": "loadIndex",
-        "parameters": [
-          {
-            "name": "fileName",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "default response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/indexStatus": {
-      "get": {
-        "tags": [
-          "controller"
-        ],
-        "operationId": "checkIndexStatus",
-        "responses": {
-          "200": {
-            "description": "default response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/IndexStatus"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/articles": {
-      "get": {
-        "tags": [
-          "controller"
-        ],
-        "operationId": "getArticles",
-        "parameters": [
-          {
-            "name": "indexName",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "default response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/QueryResultModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/query": {
       "post": {
         "tags": [
@@ -338,49 +381,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/QueryResultModel"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/initTrec": {
-      "get": {
-        "tags": [
-          "controller"
-        ],
-        "operationId": "initTrecData",
-        "responses": {
-          "200": {
-            "description": "default response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/savedIndex": {
-      "get": {
-        "tags": [
-          "controller"
-        ],
-        "operationId": "checkSavedIndexState",
-        "responses": {
-          "200": {
-            "description": "default response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SavedIndexStatus"
-                  }
                 }
               }
             }
@@ -440,6 +440,12 @@
               "$ref": "#/components/schemas/ArticleModel"
             }
           },
+          "searchWords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "documentsCount": {
             "type": "integer",
             "format": "int32"
@@ -450,6 +456,17 @@
         "type": "object",
         "properties": {
           "initialized": {
+            "type": "boolean"
+          },
+          "indexName": {
+            "type": "string"
+          }
+        }
+      },
+      "SavedIndexStatus": {
+        "type": "object",
+        "properties": {
+          "saved": {
             "type": "boolean"
           },
           "indexName": {
@@ -469,17 +486,6 @@
           "numberOfResults": {
             "type": "integer",
             "format": "int32"
-          },
-          "indexName": {
-            "type": "string"
-          }
-        }
-      },
-      "SavedIndexStatus": {
-        "type": "object",
-        "properties": {
-          "saved": {
-            "type": "boolean"
           },
           "indexName": {
             "type": "string"

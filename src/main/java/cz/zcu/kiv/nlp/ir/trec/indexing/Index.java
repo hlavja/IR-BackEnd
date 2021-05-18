@@ -176,4 +176,18 @@ public class Index implements Indexer, Searcher, Serializable {
             });
         }
     }
+
+    public List<String> getPreprocessedSearchWords(String query) {
+        String[] queryWords = query.split(" ");
+        for (int i = 0; i < queryWords.length; i++) {
+            if (queryWords[i].equals("NOT")) {
+                queryWords[i] = "";
+                queryWords[i+1] = "";
+            };
+            if (!queryWords[i].equals("AND") && !queryWords[i].equals("OR")) {
+                queryWords[i] = this.invertedList.getPreprocessing().getProcessedForm(queryWords[i].replace("(", "").replace(")", ""));
+            }
+        }
+        return Arrays.asList(queryWords);
+    }
 }
