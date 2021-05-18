@@ -94,7 +94,7 @@ public class BooleanSearch {
                             }
                         }
                         break;
-                    case MUST_NOT: // !A
+                    case MUST_NOT: // NOT
                         for(BooleanNode booleanNode: treeQuery) {
                             documents = not(documents, processQuery(booleanNode, true));
                         }
